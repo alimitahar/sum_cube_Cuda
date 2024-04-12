@@ -1,0 +1,39 @@
+#include <stdio.h>
+int ARRAY_SIZE = 1<<3;
+
+/********************** Initialize input vector **************************/
+void init(int h_in[])
+{
+    for (int i = 0; i < ARRAY_SIZE; i++) 
+    {
+		    h_in[i] = i;
+	  }
+}
+/********************** Cube **************************/
+void cube(int d_out[], int d_in[]) 
+{
+	
+	for (int i=0;i<ARRAY_SIZE;i++)
+	  d_out[i] = d_in[i] * d_in[i] * d_in[i];
+}
+/********************** main **************************/
+int main(int argc, char ** argv) {
+	const int ARRAY_BYTES = ARRAY_SIZE * sizeof(int);
+
+	// generate the input array on the host
+	int h_in[ARRAY_SIZE];
+	
+  init(h_in);
+	
+  int h_out[ARRAY_SIZE];
+
+	cube (h_out, h_in);
+
+	for (int i = 0; i < ARRAY_SIZE; i++) {
+		printf("%d", h_out[i]);
+		printf(((i % 4) != 3) ? "\t" : "\n");
+	}
+
+	return 0;
+}
+/********************** End **************************/

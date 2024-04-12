@@ -1,0 +1,33 @@
+__global__ void addVect(float *in1, float *in2, float *out) 
+{ 
+int i = threadIdx.x + blockIdx.x * blockDim.x; 
+out[i] = in1[i] + in2[i]; 
+} 
+// CPU: 
+#include  <stdio.h>
+int main()  
+{  
+float v1[]={1,2,3,4,5,6,7,8,9,10};  
+float v2[]={1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9};  
+int memsize = sizeof(v1);  
+int vsize = memsize/sizeof(float);  
+float res[vsize];  
+
+float* Cv1; cudaMalloc((void **) &Cv1, memsize);  
+float* Cv2; cudaMalloc((void **) &Cv2, memsize);  
+float* Cres; cudaMalloc((void **) &Cres, memsize);  
+
+cudaMemcpy(Cv1, v1, memsize, cudaMemcpyHostToDevice);  
+cudaMemcpy(Cv2, v2, memsize, cudaMemcpyHostToDevice);  
+
+addVect<< 2, vsize/2>>(Cv1, Cv2, Cres);  // 2 blocks  
+cudaMemcpy(res, Cres, memsize, cudaMemcpyDeviceToHost);  
+
+int i=0;  
+printf("res= { ");  
+for(i=0; i<vsize; i++) 
+{ 
+	printf("%2.2f ", res[i]); 
+}  
+printf("}\n");  
+}
